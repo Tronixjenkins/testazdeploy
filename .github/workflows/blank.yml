@@ -34,7 +34,7 @@ jobs:
               -backend-config="resource_group_name=test-cicd" \
               -backend-config="storage_account_name=terraformstate" \
               -backend-config="container_name=tfstate" \
-              -backend-config="key=${{ github.event.repository.name }}/terraform.tfstate" \
+              -backend-config="key=${{ github.event.repository.name }}/terraform.tfstate" 
               
           env:
             ARM_CLIENT_ID: ${{ secrets.ARM_DEV_CLIENT_SECRET }}
