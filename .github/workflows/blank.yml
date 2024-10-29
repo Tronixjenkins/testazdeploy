@@ -43,5 +43,6 @@ jobs:
           id: plan
           run: |
               export exitcode=0
-              terraform plan -no-color -out tfplan \
+              terraform plan -no-color -out tfplan || existcode=$?
+              exit $exitcode
 
