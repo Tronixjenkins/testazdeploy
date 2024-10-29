@@ -1,2 +1,46 @@
 name: Deploy
 on: [workflow_dispatch]
+permissions: 
+    contents: read
+    id-token: write
+env:
+  ARM_SUBSCRIPTION_ID: ${{ vars.ARM_DEV_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ vars.TENANT_ID }}
+  ARM_USE_OIDC: ${{ vars.ARM_USE_OIDC }}
+jobs:
+   terraform_start:
+    runs-on: ubuntu-latest
+    env:
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+      ARM_CLIENT_ID: ${{ secrets.ARM_DEV_CLIENT_SECRET}}
+    defaults:
+        run:
+            working-directory: ./infrastructure
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: '1.9.2'
+
+        - name: Terraform Init
+          id: init
+          run: |
+            [ "${{ vars.ARM_USE_OIDC }}" == "true" ] && \
+              terraform init -no-color \
+              -backend-config="subscription_id=${{ secrets.TFBACKEND_SUBSCRIPTION }}" \
+              -backend-config="resource_group_name=test-cicd" \
+              -backend-config="storage_account_name=terraformstate" \
+              -backend-config="container_name=tfstate" \
+              -backend-config="key=${{ github.event.repository.name }}/terraform.tfstate" \
+              -backend-config="oidc=${{ vars.ARM_USE_OIDC }}" \
+          env:
+            ARM_CLIENT_ID: ${{ secrets.ARM_DEV_CLIENT_SECRET }}
+
+        - name: Terraform Plan
+          id: plan
+          run: |
+              export exitcode=0
+              terraform plan -no-color -out tfplan \
