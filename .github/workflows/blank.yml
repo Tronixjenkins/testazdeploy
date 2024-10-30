@@ -10,14 +10,10 @@ env:
 jobs:
    terraform_start:
     runs-on: ubuntu-latest
-    # steps:
-    #     - name: Azure login
-    #       uses: azure/login@v2
-    #       with:
-    #         client-id: ${{ secrets.AZURE_CLIENT_ID }}
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRETS }}
     defaults:
         run:
             working-directory: ./infrastructure
@@ -42,7 +38,8 @@ jobs:
               -backend-config="key=${{ github.event.repository.name }}/terraform.tfstate" 
               
           env:
-            ARM_CLIENT_ID: ${{ secrets.ARM_DEV_CLIENT_SECRET }}
+            ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRETS }}
 
         # - name: Terraform Plan
         #   id: plan
