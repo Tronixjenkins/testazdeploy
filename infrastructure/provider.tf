@@ -9,5 +9,9 @@ terraform {
 }
 
 provider "azurerm" {
-  resource_provider_registrations = none
+   use_oidc = true
+   skip_provider_registration = true
+   subscription_id = ""
+   features {}
+   
 }
