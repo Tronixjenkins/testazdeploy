@@ -4,7 +4,7 @@ permissions:
     contents: read
     id-token: write
 env:
-  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_DEV }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID_CICD }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   ARM_USE_OIDC: ${{ vars.ARM_USE_OIDC }}
 jobs:
@@ -13,6 +13,7 @@ jobs:
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID_CICD }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRETS }}
     defaults:
         run:
