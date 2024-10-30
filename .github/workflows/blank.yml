@@ -4,15 +4,15 @@ permissions:
     contents: read
     id-token: write
 env:
-  ARM_SUBSCRIPTION_ID: ${{ vars.ARM_DEV_SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ vars.TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID_DEV }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   ARM_USE_OIDC: ${{ vars.ARM_USE_OIDC }}
 jobs:
    terraform_start:
     runs-on: ubuntu-latest
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
-      ARM_CLIENT_ID: ${{ secrets.ARM_DEV_CLIENT_SECRET}}
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID}}
     defaults:
         run:
             working-directory: ./infrastructure
@@ -30,7 +30,7 @@ jobs:
           run: |
             [ "${{ vars.ARM_USE_OIDC }}" == "true" ] && \
               terraform init -no-color \
-              -backend-config="subscription_id=${{ secrets.TFBACKEND_SUBSCRIPTION }}" \
+              -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID_CICD }}" \
               -backend-config="resource_group_name=test-cicd" \
               -backend-config="storage_account_name=terraformstate" \
               -backend-config="container_name=tfstate" \
@@ -39,10 +39,10 @@ jobs:
           env:
             ARM_CLIENT_ID: ${{ secrets.ARM_DEV_CLIENT_SECRET }}
 
-        - name: Terraform Plan
-          id: plan
-          run: |
-              export exitcode=0
-              terraform plan -no-color -out tfplan || existcode=$?
-              exit $exitcode
+        # - name: Terraform Plan
+        #   id: plan
+        #   run: |
+        #       export exitcode=0
+        #       terraform plan -no-color -out tfplan || existcode=$?
+        #       exit $exitcode
 
