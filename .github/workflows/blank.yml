@@ -15,7 +15,7 @@ jobs:
               with:
                 client-id: ${{ secrets.AZURE_CLIENT_ID }}
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_CICD }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
             - name: Checkout code
               uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
               run: |
                [ "${{ vars.ARM_USE_OIDC }}" == "true" ] && \
                  terraform init -no-color \
-                 -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID_CICD }}" \
+                 -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
                  -backend-config="resource_group_name=test-cicd" \
                  -backend-config="storage_account_name=terraformstate" \
                  -backend-config="container_name=tfstate" \
