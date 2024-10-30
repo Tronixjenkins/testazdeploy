@@ -10,12 +10,12 @@ jobs:
             run:
                 working-directory: ./infrastructure
         steps:
-            - name: Azure login
-              uses: azure/login@v2
-              with:
-                client-id: ${{ secrets.AZURE_CLIENT_ID }}
-                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-                subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+            # - name: Azure login
+            #   uses: azure/login@v2
+            #   with:
+            #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            #     subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
             
             - name: Checkout code
               uses: actions/checkout@v4
@@ -29,7 +29,6 @@ jobs:
             - name: Terraform Init
               id: init
               run: |
-               [ "${{ vars.ARM_USE_OIDC }}" == "true" ] && \
                  terraform init -no-color \
                  -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
                  -backend-config="resource_group_name=test-cicd" \
@@ -40,6 +39,8 @@ jobs:
               env:
                ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
                ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRETS }}
+               ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+               ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
         
 
